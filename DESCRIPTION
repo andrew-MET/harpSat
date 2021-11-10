@@ -14,5 +14,7 @@ Imports:
     meteogrid (>= 3.9.2),
     ncdf4,
     raster
-Remotes:  
+Remotes: 
     harphub/meteogrid
+URL: https://github.com/andrew-MET/harpSat
+BugReports: https://github.com/andrew-MET/harpSat/issues
