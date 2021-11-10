@@ -1,0 +1,18 @@
+Package: harpSat
+Title: Read And Manipulate Satellite Data
+Version: 0.0.0.9000
+Authors@R: 
+    person("Andrew", "Singleton", , "andrewts@met.no", role = c("aut", "cre"))
+Description: Package for reading satellite data with harp. Includes
+    functions to read from various satellite data files and to resample
+    swath data to a regular grid.
+License: Apache License (>= 2.0)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports: 
+    meteogrid (>= 3.9.2),
+    ncdf4,
+    raster
+Remotes:  
+    harphub/meteogrid
