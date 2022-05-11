@@ -15,6 +15,7 @@ Imports:
     harpIO (>= 0.0.0.9183),
     meteogrid (>= 3.9.2),
     ncdf4,
+    RANN,
     raster,
     rlang,
     sp,

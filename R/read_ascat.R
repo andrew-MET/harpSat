@@ -17,11 +17,14 @@ read_ascat_nc <- function(
   rounding            = c(NA, "secs", "mins", "hours"),
   bounding_date_times = NA,
   bounding_domain     = NA,
-  resample_domain     = NA,
+  resample_options    = NA,
   lonlat_to_id        = FALSE
 ) {
 
   rounding <- match.arg(rounding)
+  if (is.list(resample_options)) {
+    resample_options <- do.call(resample_opts, resample_options)
+  }
 
   has_bbox <- TRUE
 
@@ -41,21 +44,6 @@ read_ascat_nc <- function(
     bounding_domain_try <- NA
   }
   bounding_domain <- bounding_domain_try
-
-  resample_domain_try <- try(meteogrid::as.geodomain(resample_domain), silent = TRUE)
-  if (inherits(resample_domain_try, "try-error")) {
-    if (!is.na(resample_domain)) {
-      stop("`resample_domain` must be a `geofield` or `geodomain`")
-    }
-    resample_domain <- NA
-  }
-  resample <- FALSE
-  if (inherits(resample_domain_try, "geodomain")) {
-    resample_domain <- resample_domain_try
-    bounding_domain <- resample_domain
-    resample        <- TRUE
-    has_bbox        <- TRUE
-  }
 
   nc_id <- ncdf4::nc_open(file_name)
 
@@ -138,6 +126,14 @@ read_ascat_nc <- function(
 
   ncdf4::nc_close(nc_id)
 
+  if (is.list(resample_options)) {
+    return(
+      resample_swath(
+        swath_df$lon, swath_df$lat, swath_df[[param]], resample_options
+      )
+    )
+  }
+
   if (has_bbox) {
     swath_df <- cbind(swath_df, indices)
     swath_df <- dplyr::filter(
@@ -151,18 +147,11 @@ read_ascat_nc <- function(
     attr(swath_df, "domain") <- bounding_domain
   }
 
-  if (!resample) {
-    return(
-      tibble::as_tibble(
-        dplyr::filter(
-          swath_df, dplyr::if_any(dplyr::all_of(params), ~!is.na(.x))
-        )
-      )
-    )
-  }
-
   tibble::as_tibble(
-    dplyr::filter(swath_df, dplyr::if_any(dplyr::all_of(params), ~!is.na(.x)))
+    dplyr::filter(
+      swath_df, dplyr::if_any(dplyr::all_of(params), ~!is.na(.x))
+    )
   )
-
 }
+
+

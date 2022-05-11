@@ -1,4 +1,16 @@
-swath_to_geofield <- function(swath_df, data_col, dom, group_col, ...) {
+swath_to_geofield <- function(
+  swath_df,
+  data_col,
+  dom,
+  search_radius,
+  group_col = NULL,
+  method    = c("inverse_distance", "nearest", "mean"),
+  output    = c("data_frame", "geofield"),
+  ...
+) {
+
+  method <- match.arg(method)
+  output <- match.arg(output)
 
   data_col_quo  <- rlang::enquo(data_col)
   group_col_quo <- rlang::enquo(group_col)
